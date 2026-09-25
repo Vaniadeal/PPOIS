@@ -103,8 +103,8 @@ public:
     Vector& operator*=(double scalar);
 
     /// @brief Поэлементное деление векторов
-    Vector operator/(const Vector& other) const;
-    Vector& operator/=(const Vector& other);
+    Vector operator/(double scalar) const;
+    Vector& operator/=(double scalar);
 
     /**
      * @brief Косинус угла между векторами.
