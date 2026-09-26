@@ -4,6 +4,7 @@ project(ppois_lab1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
 # Библиотека с классами
 add_library(lab1_lib
     src/Vector.cpp
