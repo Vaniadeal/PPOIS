@@ -61,7 +61,11 @@ jobs:
           mkdir -p dist
           cp lab1/build/lab1_app.exe dist/
           cp lab1/build/lab1_tests.exe dist/
-          cd dist && tar -czf ../lab1-windows.zip *
+          cp /ucrt64/bin/libstdc++-6.dll dist/
+          cp /ucrt64/bin/libgcc_s_seh-1.dll dist/
+          cp /ucrt64/bin/libwinpthread-1.dll dist/
+          cd dist
+          powershell -Command "Compress-Archive -Path * -DestinationPath ../lab1-windows.zip -Force"
 
       - name: Upload to Release
         uses: softprops/action-gh-release@v2
