@@ -29,12 +29,7 @@ cmake_install.cmake
 .vs/
 
 # Doxygen generated
-docs/html/
-docs/latex/
-docs/rtf/
-docs/xml/
-docs/man/
-docs/*.tag
+docs/
 
 # OS
 .DS_Store
