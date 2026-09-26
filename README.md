@@ -17,12 +17,13 @@
 
 ## Структура репозитория
 
+```
 .
 ├── lab1/           # Лабораторная работа №1
 ├── .github/        # GitHub Actions workflows
 ├── .gitignore
 └── README.md
-
+```
 
 ## Сборка и тесты
 

@@ -9,20 +9,22 @@
 
 ## Структура
 
+```
 lab1/
-├── include/ # Заголовочные файлы (.h)
-│ ├── Vector.h
-│ └── Polynomial.h
-├── src/ # Реализация (.cpp)
-│ ├── Vector.cpp
-│ └── Polynomial.cpp
-├── app/ # Консольное меню
-│ └── main.cpp
-├── tests/ # Unit-тесты (UnitTest++)
-│ └── test_main.cpp
-├── docs/ # Doxygen-документация (генерируется)
+├── include/        # Заголовочные файлы (.h)
+│   ├── Vector.h
+│   └── Polynomial.h
+├── src/            # Реализация (.cpp)
+│   ├── Vector.cpp
+│   └── Polynomial.cpp
+├── app/            # Консольное меню
+│   └── main.cpp
+├── tests/          # Unit-тесты (UnitTest++)
+│   └── test_main.cpp
+├── docs/           # Doxygen-документация (генерируется)
 ├── CMakeLists.txt
 └── Doxyfile
+```
 
 
 ## Возможности классов
