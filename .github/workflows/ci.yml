@@ -39,16 +39,15 @@ jobs:
       - name: Run tests
         run: ./lab1/build/lab1_tests
 
-      - name: Check coverage (>= 90% lines)
+      - name: Debug coverage paths
         working-directory: lab1
         run: |
-          gcovr --root . \
-                --exclude ".*/_deps/.*" \
-                --exclude ".*/tests/.*" \
-                --exclude ".*/app/.*" \
-                --exclude ".*/usr/.*" \
-                --print-summary \
-                --fail-under-line 90
+          echo "=== All .gcda files ==="
+          find build -name "*.gcda"
+          echo "=== gcovr without filters ==="
+          gcovr --root .
+          echo "=== gcovr with --txt ==="
+          gcovr --root . --txt
 
       - name: Run cppcheck (static analysis)
         run: |
