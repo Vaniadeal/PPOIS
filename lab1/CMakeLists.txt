@@ -17,12 +17,17 @@ target_link_libraries(lab1_app PRIVATE lab1_lib)
 
 # UnitTest++ через FetchContent
 include(FetchContent)
+
 FetchContent_Declare(
     unittestpp
     GIT_REPOSITORY https://github.com/unittest-cpp/unittest-cpp.git
     GIT_TAG        v2.0.0
 )
-FetchContent_MakeAvailable(unittestpp)
+FetchContent_GetProperties(unittestpp)
+if(NOT unittestpp_POPULATED)
+    FetchContent_Populate(unittestpp)
+    add_subdirectory(${unittestpp_SOURCE_DIR} ${unittestpp_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
 
 # Тесты
 add_executable(lab1_tests tests/test_main.cpp)
