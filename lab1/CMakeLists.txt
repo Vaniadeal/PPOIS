@@ -4,17 +4,29 @@ project(ppois_lab1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Библиотека с классами (Вектор и Многочлен)
+# Библиотека с классами
 add_library(lab1_lib
     src/Vector.cpp
     src/Polynomial.cpp
 )
 target_include_directories(lab1_lib PUBLIC include)
 
-# Консольное приложение с меню
+# Консольное приложение
 add_executable(lab1_app app/main.cpp)
 target_link_libraries(lab1_app PRIVATE lab1_lib)
 
-# Тесты (позже подключим UnitTest++)
-# add_executable(lab1_tests tests/test_main.cpp)
-# target_link_libraries(lab1_tests PRIVATE lab1_lib)
+# UnitTest++ через FetchContent
+include(FetchContent)
+FetchContent_Declare(
+    unittestpp
+    GIT_REPOSITORY https://github.com/unittest-cpp/unittest-cpp.git
+    GIT_TAG        v2.0.0
+)
+FetchContent_MakeAvailable(unittestpp)
+
+# Тесты
+add_executable(lab1_tests tests/test_main.cpp)
+target_link_libraries(lab1_tests PRIVATE lab1_lib UnitTest++)
+
+# Явно добавляем include-путь к заголовкам UnitTest++
+target_include_directories(lab1_tests PRIVATE ${unittestpp_SOURCE_DIR})
