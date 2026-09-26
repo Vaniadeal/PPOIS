@@ -41,7 +41,15 @@ jobs:
 
       - name: Debug coverage
         working-directory: lab1
-        run: gcovr --root . --print-summary
+        run: |
+          echo "=== All files that gcovr sees ==="
+          gcovr --root . --txt
+          echo "=== With exclusions (final target) ==="
+          gcovr --root . \
+                --exclude ".*/_deps/.*" \
+                --exclude ".*/tests/.*" \
+                --exclude ".*/app/.*" \
+                --print-summary
 
       - name: Run cppcheck (static analysis)
         run: |
