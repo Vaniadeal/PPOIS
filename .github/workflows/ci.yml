@@ -43,10 +43,7 @@ jobs:
         working-directory: lab1
         run: |
           gcovr --root . \
-                --exclude ".*/_deps/.*" \
-                --exclude ".*/tests/.*" \
-                --exclude ".*/app/.*" \
-                --exclude ".*/usr/.*" \
+                --filter "src/.*" \
                 --print-summary \
                 --fail-under-line 90
 
