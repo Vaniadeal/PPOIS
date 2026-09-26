@@ -43,8 +43,8 @@ jobs:
         working-directory: lab1
         run: |
           gcovr --root . \
-                --filter "src/.*" \
-                --filter "include/.*" \
+                --filter ".*/src/.*" \
+                --filter ".*/include/.*" \
                 --print-summary \
                 --fail-under-line 90
 
