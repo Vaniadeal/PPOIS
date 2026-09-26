@@ -4,8 +4,15 @@ project(ppois_lab1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(ENABLE_COVERAGE "Enable code coverage (gcov/lcov)" OFF)
 
-# Библиотека с классами
+if(ENABLE_COVERAGE)
+    message(STATUS "Coverage is enabled")
+    add_compile_options(--coverage -O0 -g)
+    add_link_options(--coverage)
+endif()
+
+# Библиотека с классам
 add_library(lab1_lib
     src/Vector.cpp
     src/Polynomial.cpp
@@ -36,3 +43,4 @@ target_link_libraries(lab1_tests PRIVATE lab1_lib UnitTest++)
 
 # Явно добавляем include-путь к заголовкам UnitTest++
 target_include_directories(lab1_tests PRIVATE ${unittestpp_SOURCE_DIR})
+
