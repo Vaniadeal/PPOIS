@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, lab1-structure ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ ninja-build lcov
+
+      - name: Configure CMake
+        run: cmake -S lab1 -B lab1/build -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Debug
+
+      - name: Build
+        run: cmake --build lab1/build
+
+      - name: Run tests
+        run: ./lab1/build/lab1_tests
