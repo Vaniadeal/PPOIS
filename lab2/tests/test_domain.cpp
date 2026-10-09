@@ -129,8 +129,8 @@ TEST(Pharmacist_DispenseRequiresPrescription) {
     CHECK(p.calculateBonus() > 0);
     CHECK(p.calculateBonus() < p.salary());
 
-    Analgesic m("M1","Paracetamol",5,100, makeDate(2030,1,1),
-                "MAN","CAT","BC",5,12,"headache","mild");
+    Antibiotic m("M2","Amoxicillin",20.0,50, makeDate(2030,1,1),
+                 "MAN","CAT","BC2","form-1",2.0,"broad",0.3);
     CHECK(p.dispense(m, "RX1"));
     CHECK_THROW(p.dispense(m, ""), PrescriptionRequiredException);
 }

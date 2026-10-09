@@ -39,12 +39,16 @@ target_link_libraries(pharma_app PRIVATE pharma_domain)
 
 
 if(ENABLE_COVERAGE)
-    target_compile_options(pharma_domain PRIVATE --coverage -O0 -g)
-    target_link_options(pharma_domain PRIVATE --coverage)
+    target_compile_options(pharma_domain PUBLIC --coverage -O0 -g)
+    target_link_options(pharma_domain PUBLIC --coverage)
 endif()
 
 
 enable_testing()
 add_executable(pharma_tests tests/test_domain.cpp)
 target_link_libraries(pharma_tests PRIVATE pharma_domain UnitTest++)
+target_include_directories(pharma_tests PRIVATE
+    ${unittestplusplus_SOURCE_DIR}
+    ${unittestplusplus_SOURCE_DIR}/UnitTest++
+)
 add_test(NAME domain_tests COMMAND pharma_tests)
