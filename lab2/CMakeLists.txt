@@ -19,6 +19,10 @@ set(UTPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(UTPP_INSTALL OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(UnitTestPlusPlus)
 
+if (TARGET TestUnitTest++)
+    target_compile_options(TestUnitTest++ PRIVATE -Wno-error)
+endif()
+
 
 add_library(pharma_domain
     src/core.cpp
