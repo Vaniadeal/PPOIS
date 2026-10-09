@@ -18,19 +18,29 @@
 
 ```bash
 cmake -S lab2 -B lab2/build -DCMAKE_BUILD_TYPE=Release
-cmake --build lab2/build -j
+cmake --build lab2/build
 ```
 
 ## Запуск CLI
 
 ```bash
-./lab2/build/pharma_cli
+./lab2/build/pharma_app
 ```
 
 ## Тесты
 
 ```bash
 ctest --test-dir lab2/build --output-on-failure
+```
+
+## Покрытие
+
+```bash
+cmake -S lab2 -B lab2/build-cov -G Ninja \
+    -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+cmake --build lab2/build-cov
+ctest --test-dir lab2/build-cov
+cd lab2 && gcovr --root . --filter "src/.*" --print-summary --fail-under-line 90
 ```
 
 ## Структура
