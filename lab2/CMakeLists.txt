@@ -7,6 +7,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(ENABLE_COVERAGE "Enable coverage flags" OFF)
 
+
+include(FetchContent)
+FetchContent_Declare(
+    UnitTestPlusPlus
+    GIT_REPOSITORY https://github.com/unittest-cpp/unittest-cpp.git
+    GIT_TAG        v2.0.0
+)
+set(UTPP_USE_PLUS_PLUS_17 ON CACHE BOOL "" FORCE)
+set(UTPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(UTPP_INSTALL OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(UnitTestPlusPlus)
+
+
 add_library(pharma_domain
     src/core.cpp
     src/orders.cpp
@@ -20,15 +33,18 @@ add_library(pharma_domain
 )
 target_include_directories(pharma_domain PUBLIC include)
 
-add_executable(pharma_cli cli/main.cpp)
-target_link_libraries(pharma_cli PRIVATE pharma_domain)
+
+add_executable(pharma_app cli/main.cpp)
+target_link_libraries(pharma_app PRIVATE pharma_domain)
+
 
 if(ENABLE_COVERAGE)
     target_compile_options(pharma_domain PRIVATE --coverage -O0 -g)
     target_link_options(pharma_domain PRIVATE --coverage)
 endif()
 
+
 enable_testing()
-add_executable(test_domain tests/test_domain.cpp)
-target_link_libraries(test_domain PRIVATE pharma_domain)
-add_test(NAME domain_tests COMMAND test_domain)
+add_executable(pharma_tests tests/test_domain.cpp)
+target_link_libraries(pharma_tests PRIVATE pharma_domain UnitTest++)
+add_test(NAME domain_tests COMMAND pharma_tests)
