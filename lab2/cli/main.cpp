@@ -12,6 +12,10 @@
 #include <memory>
 #include <vector>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 using namespace pharma;
 
 //  вспомогательные функции для меню 
@@ -238,6 +242,10 @@ void showQuality() {
 //  main 
 
 int main() {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#endif
     Address addr("Независимости 5", "Минск", "220000", "BY", 53.9, 27.5);
     ContactInfo ci("+375291234567", "pharmacy@mail.by");
     Pharmacy pharmacy("CUST-1", "Аптека №1", addr, ci, 100000, "1234567890");
