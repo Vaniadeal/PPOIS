@@ -1,0 +1,11 @@
+#pragma once
+#include "online_learning/users/UserProfile.hpp"
+#include "online_learning/users/UserCredentials.hpp"
+#include "online_learning/users/User.hpp"
+#include "online_learning/users/Student.hpp"
+#include "online_learning/users/Instructor.hpp"
+#include "online_learning/users/TeachingAssistant.hpp"
+#include "online_learning/users/Administrator.hpp"
+#include "online_learning/users/RoleManager.hpp"
+#include "online_learning/users/Session.hpp"
+#include "online_learning/users/AuthenticationService.hpp"
