@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [ main, lab1-structure ]
-    tags: [ 'v*' ]
+    branches: [ main, lab1-structure, feature/lab3-online-learning ]
+    tags: [ 'v*', 'lab3-v*' ]
   pull_request:
     branches: [ main ]
 
@@ -25,7 +25,8 @@ jobs:
           sudo apt-get install -y cmake g++ ninja-build lcov cppcheck python3-pip
           pip install gcovr
 
-      - name: Configure CMake with coverage
+      # --- Lab 1 ---
+      - name: Configure CMake lab1
         run: |
           cmake -S lab1 -B lab1/build \
             -G Ninja \
@@ -33,13 +34,13 @@ jobs:
             -DENABLE_COVERAGE=ON \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-      - name: Build
+      - name: Build lab1
         run: cmake --build lab1/build
 
-      - name: Run tests
+      - name: Run lab1 tests
         run: ./lab1/build/lab1_tests
 
-      - name: Check coverage (>= 90% lines)
+      - name: Check coverage lab1 (>= 90% lines)
         working-directory: lab1
         run: |
           gcovr --root . \
@@ -47,7 +48,7 @@ jobs:
                 --print-summary \
                 --fail-under-line 90
 
-      - name: Run cppcheck (static analysis)
+      - name: Run cppcheck lab1
         run: |
           cppcheck --enable=warning,performance,portability \
                    --error-exitcode=1 \
@@ -56,11 +57,43 @@ jobs:
                    -I lab1/include \
                    lab1/src lab1/app
 
+      # --- Lab 3: Online Learning Platform ---
+      - name: Configure CMake lab3
+        run: |
+          cmake -S lab3 -B lab3/build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DENABLE_COVERAGE=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build lab3
+        run: cmake --build lab3/build
+
+      - name: Run lab3 tests
+        run: ./lab3/build/learning_platform_tests
+
+      - name: Check coverage lab3 (>= 90% lines)
+        working-directory: lab3
+        run: |
+          gcovr --root . \
+                --filter "src/.*" \
+                --print-summary \
+                --fail-under-line 90
+
+      - name: Run cppcheck lab3
+        run: |
+          cppcheck --enable=warning,performance,portability \
+                   --error-exitcode=1 \
+                   --inline-suppr \
+                   --suppress=missingIncludeSystem \
+                   -I lab3/include \
+                   lab3/src lab3/cli
+
   release:
     name: Build Windows release and publish
     runs-on: windows-latest
     needs: quality
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
 
     steps:
       - name: Checkout repository
@@ -76,39 +109,39 @@ jobs:
             mingw-w64-ucrt-x86_64-cmake
             mingw-w64-ucrt-x86_64-ninja
 
-      - name: Configure CMake
+      - name: Configure CMake lab3
         shell: msys2 {0}
         run: |
-          cmake -S lab1 -B lab1/build \
+          cmake -S lab3 -B lab3/build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-      - name: Build
+      - name: Build lab3
         shell: msys2 {0}
-        run: cmake --build lab1/build
+        run: cmake --build lab3/build
 
-      - name: Package artifact
+      - name: Package artifact lab3
         shell: msys2 {0}
         run: |
           mkdir -p dist
-          cp lab1/build/lab1_app.exe dist/
-          cp lab1/build/lab1_tests.exe dist/
+          cp lab3/build/learning_platform_app.exe dist/
+          cp lab3/build/learning_platform_tests.exe dist/
           cp /ucrt64/bin/libstdc++-6.dll dist/
           cp /ucrt64/bin/libgcc_s_seh-1.dll dist/
           cp /ucrt64/bin/libwinpthread-1.dll dist/
           cd dist
-          powershell -Command "Compress-Archive -Path * -DestinationPath ../lab1-windows.zip -Force"
+          powershell -Command "Compress-Archive -Path * -DestinationPath ../lab3-windows.zip -Force"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: lab1-windows.zip
+          files: lab3-windows.zip
           generate_release_notes: true
-          tag_name: v1.0-lab1
-          name: "Lab 1 — Vector & Polynomial"
+          tag_name: ${{ github.ref_name }}
+          name: "Lab 3 — Online Learning Platform"
           body: |
-            Автоматический релиз лабораторной работы №1.
+            Автоматический релиз лабораторной работы №3 (Платформа онлайн-обучения).
 
-            В архиве: `lab1_app.exe`, `lab1_tests.exe` и необходимые DLL.
-            Запуск: распаковать и запустить `lab1_app.exe`.
+            В архиве: `learning_platform_app.exe`, `learning_platform_tests.exe` и необходимые библиотеки DLL.
+            Запуск: распаковать архив и запустить `learning_platform_app.exe`.
