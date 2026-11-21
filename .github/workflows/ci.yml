@@ -2,8 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [ main, lab1-structure ]
-    tags: [ 'v*' ]
+    branches: [ main, lab1-structure, feature/lab3-online-learning, feature/lab4 ]
+    tags: [ 'v*', 'lab3-v*', 'lab4-v*' ]
   pull_request:
     branches: [ main ]
 
@@ -25,7 +25,8 @@ jobs:
           sudo apt-get install -y cmake g++ ninja-build lcov cppcheck python3-pip
           pip install gcovr
 
-      - name: Configure CMake with coverage
+      # --- Lab 1 ---
+      - name: Configure CMake lab1
         run: |
           cmake -S lab1 -B lab1/build \
             -G Ninja \
@@ -33,13 +34,13 @@ jobs:
             -DENABLE_COVERAGE=ON \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-      - name: Build
+      - name: Build lab1
         run: cmake --build lab1/build
 
-      - name: Run tests
+      - name: Run lab1 tests
         run: ./lab1/build/lab1_tests
 
-      - name: Check coverage (>= 90% lines)
+      - name: Check coverage lab1 (>= 90% lines)
         working-directory: lab1
         run: |
           gcovr --root . \
@@ -47,7 +48,7 @@ jobs:
                 --print-summary \
                 --fail-under-line 90
 
-      - name: Run cppcheck (static analysis)
+      - name: Run cppcheck lab1
         run: |
           cppcheck --enable=warning,performance,portability \
                    --error-exitcode=1 \
@@ -56,11 +57,46 @@ jobs:
                    -I lab1/include \
                    lab1/src lab1/app
 
+      # --- Lab 4: Generic Programming & Wirth Graph ---
+      - name: Configure CMake lab4
+        run: |
+          cmake -S lab4 -B lab4/build \
+            -G Ninja \
+            -DCMAKE_BUILD_TYPE=Debug \
+            -DENABLE_COVERAGE=ON \
+            -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+
+      - name: Build lab4
+        run: cmake --build lab4/build
+
+      - name: Run lab4 tests
+        run: |
+          ./lab4/build/sorts_tests
+          ./lab4/build/graph_tests
+
+      - name: Check coverage lab4 (>= 90% lines)
+        working-directory: lab4
+        run: |
+          gcovr --root . \
+                --filter "include/.*" \
+                --filter "src/.*" \
+                --print-summary \
+                --fail-under-line 90
+
+      - name: Run cppcheck lab4
+        run: |
+          cppcheck --enable=warning,performance,portability \
+                   --error-exitcode=1 \
+                   --inline-suppr \
+                   --suppress=missingIncludeSystem \
+                   -I lab4/include \
+                   lab4/src lab4/include
+
   release:
     name: Build Windows release and publish
     runs-on: windows-latest
     needs: quality
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
 
     steps:
       - name: Checkout repository
@@ -76,39 +112,45 @@ jobs:
             mingw-w64-ucrt-x86_64-cmake
             mingw-w64-ucrt-x86_64-ninja
 
-      - name: Configure CMake
+      - name: Configure CMake lab4
         shell: msys2 {0}
         run: |
-          cmake -S lab1 -B lab1/build \
+          cmake -S lab4 -B lab4/build \
             -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 
-      - name: Build
+      - name: Build lab4
         shell: msys2 {0}
-        run: cmake --build lab1/build
+        run: cmake --build lab4/build
 
-      - name: Package artifact
+      - name: Package artifact lab4
         shell: msys2 {0}
         run: |
           mkdir -p dist
-          cp lab1/build/lab1_app.exe dist/
-          cp lab1/build/lab1_tests.exe dist/
+          cp lab4/build/lab4_app.exe dist/
+          cp lab4/build/sorts_tests.exe dist/
+          cp lab4/build/graph_tests.exe dist/
           cp /ucrt64/bin/libstdc++-6.dll dist/
           cp /ucrt64/bin/libgcc_s_seh-1.dll dist/
           cp /ucrt64/bin/libwinpthread-1.dll dist/
           cd dist
-          powershell -Command "Compress-Archive -Path * -DestinationPath ../lab1-windows.zip -Force"
+          powershell -Command "Compress-Archive -Path * -DestinationPath ../lab4-windows.zip -Force"
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: lab1-windows.zip
+          files: lab4-windows.zip
           generate_release_notes: true
-          tag_name: v1.0-lab1
-          name: "Lab 1 — Vector & Polynomial"
+          tag_name: lab4-v1.0
+          name: "Lab 4 — Generic Programming & Containers (Variant 11)"
           body: |
-            Автоматический релиз лабораторной работы №1.
+            Автоматический релиз лабораторной работы №4 (Вариант 11).
 
-            В архиве: `lab1_app.exe`, `lab1_tests.exe` и необходимые DLL.
-            Запуск: распаковать и запустить `lab1_app.exe`.
+            В архиве:
+            - `lab4_app.exe` (интерактивное консольное CLI-меню)
+            - `sorts_tests.exe` (unit-тесты сортировок In-place merge sort и Bogosort)
+            - `graph_tests.exe` (unit-тесты контейнера графа на структуре Вирта)
+            - Необходимые системные DLL-библиотеки
+
+            Запуск: распаковать архив и запустить `lab4_app.exe`.
