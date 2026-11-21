@@ -26,6 +26,11 @@ TEST(IsSortedCustom_VariousScenarios) {
     std::vector<int> desc = {9, 5, 2, 1};
     CHECK(!is_sorted_custom(desc.begin(), desc.end()));
     CHECK(is_sorted_custom(desc.begin(), desc.end(), std::greater<int>()));
+
+    int rawSingle[] = {100};
+    CHECK(is_sorted_custom(std::begin(rawSingle), std::end(rawSingle)));
+    int rawUnsorted[] = {2, 1};
+    CHECK(!is_sorted_custom(std::begin(rawUnsorted), std::end(rawUnsorted)));
 }
 
 TEST(BogoSort_VectorAndArray) {
@@ -51,6 +56,18 @@ TEST(BogoSort_VectorAndArray) {
     CHECK_EQUAL(1, arr[0]);
     CHECK_EQUAL(2, arr[1]);
     CHECK_EQUAL(3, arr[2]);
+
+    int singleArr[] = {3};
+    bogo_sort_container(singleArr);
+    CHECK_EQUAL(3, singleArr[0]);
+
+    std::vector<int> emptyDesc;
+    bogo_sort_container(emptyDesc, std::greater<int>());
+    CHECK(emptyDesc.empty());
+
+    std::vector<int> singleDesc = {5};
+    bogo_sort_container(singleDesc, std::greater<int>());
+    CHECK_EQUAL(5, singleDesc[0]);
 
     std::vector<int> desc = {2, 4, 1};
     bogo_sort_container(desc, std::greater<int>());
@@ -88,7 +105,29 @@ TEST(InPlaceMergeSort_BasicTypes) {
     CHECK_EQUAL(5, duplicates[6]);
 }
 
+TEST(InPlaceMergeCustom_DirectInvocationsAndEdgeCases) {
+    std::vector<int> v = {1, 5, 2, 4};
+    in_place_merge_custom(v.begin(), v.begin() + 2, v.end(), std::less<int>());
+    CHECK_EQUAL(1, v[0]);
+    CHECK_EQUAL(2, v[1]);
+    CHECK_EQUAL(4, v[2]);
+    CHECK_EQUAL(5, v[3]);
+
+    in_place_merge_custom(v.begin(), v.begin(), v.end(), std::less<int>());
+    in_place_merge_custom(v.begin(), v.end(), v.end(), std::less<int>());
+    CHECK_EQUAL(1, v[0]);
+
+    std::vector<int> v2 = {3, 1};
+    in_place_merge_custom(v2.begin(), v2.begin() + 1, v2.end(), std::less<int>());
+    CHECK_EQUAL(1, v2[0]);
+    CHECK_EQUAL(3, v2[1]);
+}
+
 TEST(InPlaceMergeSort_RawArray) {
+    int singleArr[1] = {99};
+    in_place_merge_sort_container(singleArr);
+    CHECK_EQUAL(99, singleArr[0]);
+
     int arr[8] = {12, 3, 17, 8, 34, 1, 23, 9};
     in_place_merge_sort_container(arr);
     CHECK(is_sorted_custom(std::begin(arr), std::end(arr)));
@@ -99,6 +138,14 @@ TEST(InPlaceMergeSort_RawArray) {
 }
 
 TEST(InPlaceMergeSort_CustomComparator) {
+    std::vector<std::string> emptyWords;
+    in_place_merge_sort_container(emptyWords, std::greater<std::string>());
+    CHECK(emptyWords.empty());
+
+    std::vector<std::string> singleWord = {"single"};
+    in_place_merge_sort_container(singleWord, std::greater<std::string>());
+    CHECK_EQUAL("single", singleWord[0]);
+
     std::vector<std::string> words = {"banana", "apple", "pear", "fig"};
     in_place_merge_sort_container(words, std::greater<std::string>());
     CHECK_EQUAL("pear", words[0]);
@@ -108,6 +155,19 @@ TEST(InPlaceMergeSort_CustomComparator) {
 }
 
 TEST(InPlaceMergeSort_CustomUserClassStudent) {
+    Student defaultStudent;
+    CHECK_EQUAL(0, defaultStudent.getId());
+    CHECK_EQUAL("", defaultStudent.getName());
+    CHECK_EQUAL(0.0, defaultStudent.getGpa());
+
+    std::vector<Student> emptyStudents;
+    in_place_merge_sort_container(emptyStudents);
+    CHECK(emptyStudents.empty());
+
+    std::vector<Student> singleStudent = {Student(1, "Only", 4.0)};
+    in_place_merge_sort_container(singleStudent);
+    CHECK_EQUAL(1, singleStudent[0].getId());
+
     std::vector<Student> students = {
         Student(103, "Alice", 8.5),
         Student(101, "Bob", 9.2),
@@ -115,6 +175,8 @@ TEST(InPlaceMergeSort_CustomUserClassStudent) {
         Student(102, "David", 9.5),
         Student(104, "Eve", 8.9)
     };
+
+    CHECK(students[0] != students[1]);
 
     in_place_merge_sort_container(students);
     CHECK(is_sorted_custom(students.begin(), students.end()));

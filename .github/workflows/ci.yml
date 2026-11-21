@@ -90,7 +90,7 @@ jobs:
                    --inline-suppr \
                    --suppress=missingIncludeSystem \
                    -I lab4/include \
-                   lab4/src lab4/include
+                   lab4/src lab4/cli lab4/include
 
   release:
     name: Build Windows release and publish
@@ -142,7 +142,7 @@ jobs:
         with:
           files: lab4-windows.zip
           generate_release_notes: true
-          tag_name: lab4-v1.0
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'lab4-v1.0' }}
           name: "Lab 4 — Generic Programming & Containers (Variant 11)"
           body: |
             Автоматический релиз лабораторной работы №4 (Вариант 11).

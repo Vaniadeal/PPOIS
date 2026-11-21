@@ -8,10 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 option(ENABLE_COVERAGE "Enable code coverage flags" OFF)
-if(ENABLE_COVERAGE)
-    add_compile_options(--coverage -O0 -g)
-    add_link_options(--coverage)
-endif()
 
 include(FetchContent)
 FetchContent_Declare(
@@ -31,7 +27,7 @@ endif()
 add_library(models_lib src/models/Student.cpp)
 target_include_directories(models_lib PUBLIC include)
 
-add_executable(lab4_app src/main.cpp)
+add_executable(lab4_app cli/main.cpp)
 target_include_directories(lab4_app PRIVATE include)
 target_link_libraries(lab4_app PRIVATE models_lib)
 
@@ -54,3 +50,15 @@ target_include_directories(graph_tests PRIVATE
 )
 target_link_libraries(graph_tests PRIVATE UnitTest++)
 add_test(NAME graph_tests COMMAND graph_tests)
+
+if(ENABLE_COVERAGE)
+    message(STATUS "Coverage is enabled")
+    target_compile_options(models_lib PRIVATE --coverage -O0 -g)
+    target_link_options(models_lib PRIVATE --coverage)
+    target_link_options(lab4_app PRIVATE --coverage)
+    target_compile_options(sorts_tests PRIVATE --coverage -O0 -g)
+    target_link_options(sorts_tests PRIVATE --coverage)
+    target_compile_options(graph_tests PRIVATE --coverage -O0 -g)
+    target_link_options(graph_tests PRIVATE --coverage)
+endif()
+
