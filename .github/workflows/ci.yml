@@ -11,9 +11,10 @@ permissions:
   contents: write
 
 jobs:
-  quality:
-    name: Build, test, coverage, lint
+  lab1:
+    name: "Lab 1: Tests & Coverage"
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/lab1-structure' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/v')
 
     steps:
       - name: Checkout repository
@@ -25,7 +26,6 @@ jobs:
           sudo apt-get install -y cmake g++ ninja-build lcov cppcheck python3-pip
           pip install gcovr
 
-      # --- Lab 1 ---
       - name: Configure CMake lab1
         run: |
           cmake -S lab1 -B lab1/build \
@@ -57,7 +57,21 @@ jobs:
                    -I lab1/include \
                    lab1/src lab1/app
 
-      # --- Lab 3: Online Learning Platform ---
+  lab3:
+    name: "Lab 3: Tests & Coverage (>= 90%)"
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/lab3-online-learning' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/lab3-') || startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ ninja-build lcov cppcheck python3-pip
+          pip install gcovr
+
       - name: Configure CMake lab3
         run: |
           cmake -S lab3 -B lab3/build \
@@ -89,7 +103,21 @@ jobs:
                    -I lab3/include \
                    lab3/src lab3/cli
 
-      # --- Lab 4: Generic Programming & Wirth Graph ---
+  lab4:
+    name: "Lab 4: Tests & Coverage (>= 90%)"
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/lab4' || github.event_name == 'pull_request' || startsWith(github.ref, 'refs/tags/lab4-') || startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ ninja-build lcov cppcheck python3-pip
+          pip install gcovr
+
       - name: Configure CMake lab4
         run: |
           cmake -S lab4 -B lab4/build \
@@ -126,9 +154,9 @@ jobs:
                    lab4/src lab4/cli lab4/include
 
   release-lab3:
-    name: Build Lab 3 Windows release and publish
+    name: "Release: Lab 3 Windows"
     runs-on: windows-latest
-    needs: quality
+    needs: lab3
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/lab3-') || startsWith(github.ref, 'refs/tags/v'))
 
     steps:
@@ -183,9 +211,9 @@ jobs:
             Запуск: распаковать архив и запустить `learning_platform_app.exe`.
 
   release-lab4:
-    name: Build Lab 4 Windows release and publish
+    name: "Release: Lab 4 Windows"
     runs-on: windows-latest
-    needs: quality
+    needs: lab4
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feature/lab4' || startsWith(github.ref, 'refs/tags/lab4-') || startsWith(github.ref, 'refs/tags/v'))
 
     steps:
