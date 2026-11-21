@@ -376,7 +376,7 @@ public:
         return degree(u) + degree(v) - 2;
     }
 
-    iterator erase(iterator pos) {
+    iterator erase(const iterator& pos) {
         if (pos.node_ == nullptr) {
             throw std::out_of_range("Cannot erase end iterator");
         }
@@ -385,7 +385,7 @@ public:
         return iterator(nextNode, this);
     }
 
-    edge_iterator erase(edge_iterator pos) {
+    edge_iterator erase(const edge_iterator& pos) {
         if (pos.currentVertex_ == nullptr || pos.currentEdge_ == nullptr) {
             throw std::out_of_range("Cannot erase end edge iterator");
         }
