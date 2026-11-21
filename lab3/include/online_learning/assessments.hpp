@@ -1,0 +1,11 @@
+#pragma once
+#include "online_learning/assessments/Question.hpp"
+#include "online_learning/assessments/SingleChoiceQuestion.hpp"
+#include "online_learning/assessments/MultipleChoiceQuestion.hpp"
+#include "online_learning/assessments/CodingQuestion.hpp"
+#include "online_learning/assessments/StudentAnswer.hpp"
+#include "online_learning/assessments/QuizAttempt.hpp"
+#include "online_learning/assessments/Quiz.hpp"
+#include "online_learning/assessments/HomeworkAssignment.hpp"
+#include "online_learning/assessments/HomeworkSubmission.hpp"
+#include "online_learning/assessments/HomeworkReview.hpp"

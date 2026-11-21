@@ -1,0 +1,11 @@
+#pragma once
+#include "online_learning/courses/Tag.hpp"
+#include "online_learning/courses/CourseCategory.hpp"
+#include "online_learning/courses/Attachment.hpp"
+#include "online_learning/courses/Lesson.hpp"
+#include "online_learning/courses/VideoLesson.hpp"
+#include "online_learning/courses/TextArticleLesson.hpp"
+#include "online_learning/courses/InteractiveCodingLesson.hpp"
+#include "online_learning/courses/CourseModule.hpp"
+#include "online_learning/courses/CourseSyllabus.hpp"
+#include "online_learning/courses/Course.hpp"
